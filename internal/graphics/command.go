@@ -17,7 +17,6 @@ package graphics
 import (
 	"fmt"
 
-	"github.com/hajimehoshi/ebiten/internal/affine"
 	emath "github.com/hajimehoshi/ebiten/internal/math"
 	"github.com/hajimehoshi/ebiten/internal/opengl"
 )
@@ -34,7 +33,7 @@ type command interface {
 	NumElements() int
 	AddNumVertices(n int)
 	AddNumElements(n int)
-	CanMerge(dst, src *Image, color *affine.ColorM, mode opengl.CompositeMode, filter Filter) bool
+	CanMerge(dst, src *Image, mode opengl.CompositeMode, filter Filter) bool
 }
 
 // commandQueue is a command queue for drawing commands.
@@ -87,12 +86,12 @@ func (q *commandQueue) appendElements(e0, e1, e2, e3, e4, e5 uint16) {
 	q.nelements += 6
 }
 
-func (q *commandQueue) doEnqueueDrawImageCommand(dst, src *Image, nvertices, nelements int, color *affine.ColorM, mode opengl.CompositeMode, filter Filter, forceNewCommand bool) {
+func (q *commandQueue) doEnqueueDrawImageCommand(dst, src *Image, nvertices, nelements int, mode opengl.CompositeMode, filter Filter, forceNewCommand bool) {
 	if nelements > indicesNum {
 		panic("not implemented for too many elements")
 	}
 	if !forceNewCommand && 0 < len(q.commands) {
-		if last := q.commands[len(q.commands)-1]; last.CanMerge(dst, src, color, mode, filter) {
+		if last := q.commands[len(q.commands)-1]; last.CanMerge(dst, src, mode, filter) {
 			last.AddNumVertices(nvertices)
 			last.AddNumElements(nelements)
 			return
@@ -103,7 +102,6 @@ func (q *commandQueue) doEnqueueDrawImageCommand(dst, src *Image, nvertices, nel
 		src:       src,
 		nvertices: nvertices,
 		nelements: nelements,
-		color:     color,
 		mode:      mode,
 		filter:    filter,
 	}
@@ -111,7 +109,7 @@ func (q *commandQueue) doEnqueueDrawImageCommand(dst, src *Image, nvertices, nel
 }
 
 // EnqueueDrawImageCommand enqueues a drawing-image command.
-func (q *commandQueue) EnqueueDrawImageCommand(dst, src *Image, vertices []float32, color *affine.ColorM, mode opengl.CompositeMode, filter Filter) {
+func (q *commandQueue) EnqueueDrawImageCommand(dst, src *Image, vertices []float32, mode opengl.CompositeMode, filter Filter) {
 	// Avoid defer for performance
 	q.appendVertices(vertices)
 	nq := len(vertices) * opengl.Float.SizeInBytes() / QuadVertexSizeInBytes()
@@ -121,7 +119,7 @@ func (q *commandQueue) EnqueueDrawImageCommand(dst, src *Image, vertices []float
 		if q.nelements%indicesNum >= (q.nelements+6)%indicesNum {
 			q.nextIndex = 0
 			// Note that even if ne == 0, that's fine.
-			q.doEnqueueDrawImageCommand(dst, src, nv, ne, color, mode, filter, true)
+			q.doEnqueueDrawImageCommand(dst, src, nv, ne, mode, filter, true)
 			nv = 0
 			ne = 0
 		}
@@ -137,7 +135,7 @@ func (q *commandQueue) EnqueueDrawImageCommand(dst, src *Image, vertices []float
 		nv += QuadVertexSizeInBytes() / opengl.Float.SizeInBytes()
 		ne += 6
 	}
-	q.doEnqueueDrawImageCommand(dst, src, nv, ne, color, mode, filter, false)
+	q.doEnqueueDrawImageCommand(dst, src, nv, ne, mode, filter, false)
 }
 
 // Enqueue enqueues a drawing command other than a draw-image command.
@@ -211,7 +209,6 @@ type drawImageCommand struct {
 	src       *Image
 	nvertices int
 	nelements int
-	color     *affine.ColorM
 	mode      opengl.CompositeMode
 	filter    Filter
 }
@@ -235,7 +232,7 @@ func (c *drawImageCommand) Exec(indexOffsetInBytes int) error {
 		return nil
 	}
 	proj := f.projectionMatrix()
-	theOpenGLState.useProgram(proj, c.src.texture.native, c.dst, c.src, c.color, c.filter)
+	theOpenGLState.useProgram(proj, c.src.texture.native, c.dst, c.src, c.filter)
 	opengl.GetContext().DrawElements(opengl.Triangles, c.nelements, indexOffsetInBytes)
 
 	// glFlush() might be necessary at least on MacBook Pro (a smilar problem at #419),
@@ -263,14 +260,11 @@ func (c *drawImageCommand) AddNumElements(n int) {
 
 // CanMerge returns a boolean value indicating whether the other drawImageCommand can be merged
 // with the drawImageCommand c.
-func (c *drawImageCommand) CanMerge(dst, src *Image, color *affine.ColorM, mode opengl.CompositeMode, filter Filter) bool {
+func (c *drawImageCommand) CanMerge(dst, src *Image, mode opengl.CompositeMode, filter Filter) bool {
 	if c.dst != dst {
 		return false
 	}
 	if c.src != src {
-		return false
-	}
-	if !c.color.Equals(color) {
 		return false
 	}
 	if c.mode != mode {
@@ -316,7 +310,7 @@ func (c *replacePixelsCommand) AddNumVertices(n int) {
 func (c *replacePixelsCommand) AddNumElements(n int) {
 }
 
-func (c *replacePixelsCommand) CanMerge(dst, src *Image, color *affine.ColorM, mode opengl.CompositeMode, filter Filter) bool {
+func (c *replacePixelsCommand) CanMerge(dst, src *Image, mode opengl.CompositeMode, filter Filter) bool {
 	return false
 }
 
@@ -351,7 +345,7 @@ func (c *disposeCommand) AddNumVertices(n int) {
 func (c *disposeCommand) AddNumElements(n int) {
 }
 
-func (c *disposeCommand) CanMerge(dst, src *Image, color *affine.ColorM, mode opengl.CompositeMode, filter Filter) bool {
+func (c *disposeCommand) CanMerge(dst, src *Image, mode opengl.CompositeMode, filter Filter) bool {
 	return false
 }
 
@@ -407,7 +401,7 @@ func (c *newImageCommand) AddNumVertices(n int) {
 func (c *newImageCommand) AddNumElements(n int) {
 }
 
-func (c *newImageCommand) CanMerge(dst, src *Image, color *affine.ColorM, mode opengl.CompositeMode, filter Filter) bool {
+func (c *newImageCommand) CanMerge(dst, src *Image, mode opengl.CompositeMode, filter Filter) bool {
 	return false
 }
 
@@ -442,6 +436,6 @@ func (c *newScreenFramebufferImageCommand) AddNumVertices(n int) {
 func (c *newScreenFramebufferImageCommand) AddNumElements(n int) {
 }
 
-func (c *newScreenFramebufferImageCommand) CanMerge(dst, src *Image, color *affine.ColorM, mode opengl.CompositeMode, filter Filter) bool {
+func (c *newScreenFramebufferImageCommand) CanMerge(dst, src *Image, mode opengl.CompositeMode, filter Filter) bool {
 	return false
 }
