@@ -94,6 +94,31 @@ var (
 				dataType: opengl.Float,
 				num:      4,
 			},
+			{
+				name:     "color_matrix_body0",
+				dataType: opengl.Float,
+				num:      4,
+			},
+			{
+				name:     "color_matrix_body1",
+				dataType: opengl.Float,
+				num:      4,
+			},
+			{
+				name:     "color_matrix_body2",
+				dataType: opengl.Float,
+				num:      4,
+			},
+			{
+				name:     "color_matrix_body3",
+				dataType: opengl.Float,
+				num:      4,
+			},
+			{
+				name:     "color_matrix_translation",
+				dataType: opengl.Float,
+				num:      4,
+			},
 		},
 	}
 )
@@ -116,8 +141,6 @@ type openGLState struct {
 
 	lastProgram                opengl.Program
 	lastProjectionMatrix       []float32
-	lastColorMatrix            []float32
-	lastColorMatrixTranslation []float32
 	lastSourceWidth            int
 	lastSourceHeight           int
 }
@@ -149,8 +172,6 @@ func (s *openGLState) reset() error {
 
 	s.lastProgram = zeroProgram
 	s.lastProjectionMatrix = nil
-	s.lastColorMatrix = nil
-	s.lastColorMatrixTranslation = nil
 	s.lastSourceWidth = 0
 	s.lastSourceHeight = 0
 
@@ -280,8 +301,6 @@ func (s *openGLState) useProgram(proj []float32, texture opengl.Texture, dst, sr
 
 		s.lastProgram = program
 		s.lastProjectionMatrix = nil
-		s.lastColorMatrix = nil
-		s.lastColorMatrixTranslation = nil
 		s.lastSourceWidth = 0
 		s.lastSourceHeight = 0
 	}
@@ -294,25 +313,6 @@ func (s *openGLState) useProgram(proj []float32, texture opengl.Texture, dst, sr
 		// (*framebuffer).projectionMatrix is always same for the same framebuffer.
 		// It's OK to hold the reference without copying.
 		s.lastProjectionMatrix = proj
-	}
-
-	esBody, esTranslate := colorM.UnsafeElements()
-
-	if !areSameFloat32Array(s.lastColorMatrix, esBody) {
-		c.UniformFloats(program, "color_matrix", esBody)
-		if s.lastColorMatrix == nil {
-			s.lastColorMatrix = make([]float32, 16)
-		}
-		// ColorM's elements are immutable. It's OK to hold the reference without copying.
-		s.lastColorMatrix = esBody
-	}
-	if !areSameFloat32Array(s.lastColorMatrixTranslation, esTranslate) {
-		c.UniformFloats(program, "color_matrix_translation", esTranslate)
-		if s.lastColorMatrixTranslation == nil {
-			s.lastColorMatrixTranslation = make([]float32, 4)
-		}
-		// ColorM's elements are immutable. It's OK to hold the reference without copying.
-		s.lastColorMatrixTranslation = esTranslate
 	}
 
 	sw, sh := src.Size()
