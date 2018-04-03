@@ -61,9 +61,6 @@ func MouseWheel() (xoff, yoff float64) {
 // IsMouseButtonPressed returns a boolean indicating whether mouseButton is pressed.
 //
 // IsMouseButtonPressed is concurrent-safe.
-//
-// Note that touch events not longer affect IsMouseButtonPressed's result as of 1.4.0-alpha.
-// Use Touches instead.
 func IsMouseButtonPressed(mouseButton MouseButton) bool {
 	return input.Get().IsMouseButtonPressed(input.MouseButton(mouseButton))
 }
