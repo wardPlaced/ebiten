@@ -27,7 +27,7 @@ var (
 
 func init() {
 	emptyImage, _ = ebiten.NewImage(16, 16, ebiten.FilterDefault)
-	_ = emptyImage.Fill(color.White)
+	emptyImage.Fill(color.White)
 }
 
 func colorScale(clr color.Color) (rf, gf, bf, af float64) {

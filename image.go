@@ -78,16 +78,13 @@ func (i *Image) Clear() {
 // Fill fills the image with a solid color.
 //
 // When the image is disposed, Fill does nothing.
-//
-// Fill always returns nil as of 1.5.0-alpha.
-func (i *Image) Fill(clr color.Color) error {
+func (i *Image) Fill(clr color.Color) {
 	i.copyCheck()
 	if i.isDisposed() {
-		return nil
+		return
 	}
 	r, g, b, a := clr.RGBA()
 	i.fill(uint8(r>>8), uint8(g>>8), uint8(b>>8), uint8(a>>8))
-	return nil
 }
 
 func (i *Image) fill(r, g, b, a uint8) {
