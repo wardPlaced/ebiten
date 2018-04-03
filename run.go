@@ -396,11 +396,6 @@ func SetCursorVisible(visible bool) {
 	ui.SetCursorVisible(visible)
 }
 
-// SetCursorVisibility is deprecated as of 1.6.0-alpha. Use SetCursorVisible instead.
-func SetCursorVisibility(visible bool) {
-	SetCursorVisible(visible)
-}
-
 // IsFullscreen returns a boolean value indicating whether
 // the current mode is fullscreen or not.
 //
