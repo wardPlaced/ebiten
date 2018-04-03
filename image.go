@@ -165,38 +165,8 @@ func (i *Image) DrawImage(img *Image, options *DrawImageOptions) error {
 		return nil
 	}
 
-	// Calculate vertices before locking because the user can do anything in
-	// options.ImageParts interface without deadlock (e.g. Call Image functions).
 	if options == nil {
 		options = &DrawImageOptions{}
-	}
-
-	parts := options.ImageParts
-	// Parts is deprecated. This implementations is for backward compatibility.
-	if parts == nil && options.Parts != nil {
-		parts = imageParts(options.Parts)
-	}
-
-	// ImageParts is deprecated. This implementations is for backward compatibility.
-	if parts != nil {
-		l := parts.Len()
-		for idx := 0; idx < l; idx++ {
-			sx0, sy0, sx1, sy1 := parts.Src(idx)
-			dx0, dy0, dx1, dy1 := parts.Dst(idx)
-			op := &DrawImageOptions{
-				ColorM:        options.ColorM,
-				CompositeMode: options.CompositeMode,
-			}
-			r := image.Rect(sx0, sy0, sx1, sy1)
-			op.SourceRect = &r
-			op.GeoM.Scale(
-				float64(dx1-dx0)/float64(sx1-sx0),
-				float64(dy1-dy0)/float64(sy1-sy0))
-			op.GeoM.Translate(float64(dx0), float64(dy0))
-			op.GeoM.Concat(options.GeoM)
-			i.DrawImage(img, op)
-		}
-		return nil
 	}
 
 	w, h := img.Size()
@@ -349,12 +319,6 @@ type DrawImageOptions struct {
 	// If either is FilterDefault and the other is not, the latter is used.
 	// Otherwise, Filter specified at DrawImageOptions is used.
 	Filter Filter
-
-	// Deprecated (as of 1.5.0-alpha): Use SourceRect instead.
-	ImageParts ImageParts
-
-	// Deprecated (as of 1.1.0-alpha): Use SourceRect instead.
-	Parts []ImagePart
 }
 
 // NewImage returns an empty image.
