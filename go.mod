@@ -1,1 +1,1 @@
-module "github.com/hajimehoshi/ebiten"
+module "github.com/hajimehoshi/ebiten/v2"
