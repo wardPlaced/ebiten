@@ -117,7 +117,7 @@ func (i *Image) fill(r, g, b, a uint8) {
 	}
 	op.CompositeMode = CompositeModeCopy
 	op.Filter = FilterNearest
-	_ = i.DrawImage(emptyImage, op)
+	i.DrawImage(emptyImage, op)
 }
 
 // DrawImage draws the given image on the image i.
@@ -148,15 +148,13 @@ func (i *Image) fill(r, g, b, a uint8) {
 //   * All Filter values are same
 //
 // For more performance tips, see https://github.com/hajimehoshi/ebiten/wiki/Performance-Tips.
-//
-// DrawImage always returns nil as of 1.5.0-alpha.
-func (i *Image) DrawImage(img *Image, options *DrawImageOptions) error {
+func (i *Image) DrawImage(img *Image, options *DrawImageOptions) {
 	i.copyCheck()
 	if img.isDisposed() {
 		panic("ebiten: the given image to DrawImage must not be disposed")
 	}
 	if i.isDisposed() {
-		return nil
+		return
 	}
 
 	if options == nil {
@@ -203,7 +201,6 @@ func (i *Image) DrawImage(img *Image, options *DrawImageOptions) error {
 
 	a, b, c, d, tx, ty := geom.elements()
 	i.shareableImage.DrawImage(img.shareableImage, sx0, sy0, sx1, sy1, a, b, c, d, tx, ty, options.ColorM.impl, mode, filter)
-	return nil
 }
 
 // Bounds returns the bounds of the image.
