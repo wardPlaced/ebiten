@@ -42,12 +42,10 @@ var (
 // Start is concurrent-safe.
 //
 // Start always returns nil as of 1.5.0-alpha.
-func Start(f func(*ebiten.Image) error, width, height int, scale float64, title string) error {
+func Start(f func(*ebiten.Image) error, width, height int, scale float64, title string) {
 	mobileMutex.Lock()
 	defer mobileMutex.Unlock()
-
 	start(f, width, height, scale, title)
-	return nil
 }
 
 // Update updates and renders the game.
