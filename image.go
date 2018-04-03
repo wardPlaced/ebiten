@@ -396,8 +396,3 @@ func newImageWithScreenFramebuffer(width, height int) *Image {
 	runtime.SetFinalizer(i, (*Image).Dispose)
 	return i
 }
-
-// MaxImageSize is deprecated as of 1.7.0-alpha. No replacement so far.
-//
-// TODO: Make this replacement (#541)
-var MaxImageSize = 4096
