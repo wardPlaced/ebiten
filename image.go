@@ -223,7 +223,7 @@ func (i *Image) ColorModel() color.Model {
 // Note that important logic should not rely on At result since
 // At might include a very slight error on some machines.
 //
-// At can't be called before the main loop (ebiten.Run) starts (as of version 1.4.0-alpha).
+// At can't be called before the main loop (ebiten.Run) starts.
 func (i *Image) At(x, y int) color.Color {
 	if i.isDisposed() {
 		return color.RGBA{}
@@ -236,17 +236,14 @@ func (i *Image) At(x, y int) color.Color {
 // Dispose is useful to save memory.
 //
 // When the image is disposed, Dipose does nothing.
-//
-// Dipose always return nil as of 1.5.0-alpha.
-func (i *Image) Dispose() error {
+func (i *Image) Dispose() {
 	i.copyCheck()
 	if i.isDisposed() {
-		return nil
+		return
 	}
 	i.shareableImage.Dispose()
 	i.shareableImage = nil
 	runtime.SetFinalizer(i, nil)
-	return nil
 }
 
 // ReplacePixels replaces the pixels of the image with p.
