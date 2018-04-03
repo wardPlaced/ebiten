@@ -202,10 +202,8 @@ func init() {
 // Other values might not work.
 // For example, 22050 causes error on Safari when decoding MP3.
 //
-// Error returned by NewContext is always nil as of 1.5.0-alpha.
-//
 // NewContext panics when an audio context is already created.
-func NewContext(sampleRate int) (*Context, error) {
+func NewContext(sampleRate int) *Context {
 	theContextLock.Lock()
 	defer theContextLock.Unlock()
 	if theContext != nil {
@@ -221,7 +219,7 @@ func NewContext(sampleRate int) (*Context, error) {
 
 	go c.loop()
 
-	return c, nil
+	return c
 }
 
 // CurrentContext returns the current context or nil if there is no context.
@@ -393,16 +391,14 @@ func NewPlayer(context *Context, src io.ReadCloser) (*Player, error) {
 // src can be shared by multiple players.
 //
 // The format of src should be same as noted at NewPlayer.
-//
-// NewPlayerFromBytes's error is always nil as of 1.5.0-alpha.
-func NewPlayerFromBytes(context *Context, src []byte) (*Player, error) {
+func NewPlayerFromBytes(context *Context, src []byte) *Player {
 	b := BytesReadSeekCloser(src)
 	p, err := NewPlayer(context, b)
 	if err != nil {
 		// Errors should never happen.
 		panic(err)
 	}
-	return p, nil
+	return p
 }
 
 // Close closes the stream.

@@ -34,15 +34,7 @@ const (
 	frequency    = 440
 )
 
-var audioContext *audio.Context
-
-func init() {
-	var err error
-	audioContext, err = audio.NewContext(sampleRate)
-	if err != nil {
-		log.Fatal(err)
-	}
-}
+var audioContext = audio.NewContext(sampleRate)
 
 // stream is an infinite stream of 440 Hz sine wave.
 type stream struct {

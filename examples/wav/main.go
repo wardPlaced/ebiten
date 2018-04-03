@@ -33,17 +33,12 @@ const (
 )
 
 var (
-	audioContext *audio.Context
+	audioContext = audio.NewContext(sampleRate)
 	audioPlayer  *audio.Player
 )
 
 func init() {
 	var err error
-	// Initialize audio context.
-	audioContext, err = audio.NewContext(sampleRate)
-	if err != nil {
-		log.Fatal(err)
-	}
 
 	// In this example, embeded resource "Jab_wav" is used.
 	//

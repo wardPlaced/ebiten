@@ -32,15 +32,7 @@ const (
 	sampleRate   = 44100
 )
 
-var audioContext *audio.Context
-
-func init() {
-	var err error
-	audioContext, err = audio.NewContext(sampleRate)
-	if err != nil {
-		log.Fatal(err)
-	}
-}
+var audioContext = audio.NewContext(sampleRate)
 
 const (
 	freqA  = 440.0
@@ -127,7 +119,7 @@ func playNote(scoreIndex int) rune {
 	square(l, vol, freq, 0.25)
 	square(r, vol, freq, 0.25)
 
-	p, _ := audio.NewPlayerFromBytes(audioContext, toBytes(l, r))
+	p := audio.NewPlayerFromBytes(audioContext, toBytes(l, r))
 	p.Play()
 
 	return rune(note)
