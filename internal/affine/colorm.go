@@ -192,35 +192,6 @@ func (c *ColorM) Concat(other *ColorM) *ColorM {
 	}
 }
 
-// Add is deprecated.
-func (c *ColorM) Add(other *ColorM) *ColorM {
-	lhsb := colorMIdentityBody
-	lhst := colorMIdentityTranslate
-	rhsb := colorMIdentityBody
-	rhst := colorMIdentityTranslate
-	if other.isInited() {
-		lhsb = other.body
-		lhst = other.translate
-	}
-	if c.isInited() {
-		rhsb = c.body
-		rhst = c.translate
-	}
-
-	newC := &ColorM{
-		body:      make([]float32, 16),
-		translate: make([]float32, 4),
-	}
-	for i := range lhsb {
-		newC.body[i] = lhsb[i] + rhsb[i]
-	}
-	for i := range lhst {
-		newC.translate[i] = lhst[i] + rhst[i]
-	}
-
-	return newC
-}
-
 // Scale scales the matrix by (r, g, b, a).
 func (c *ColorM) Scale(r, g, b, a float32) *ColorM {
 	if !c.isInited() {

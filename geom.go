@@ -103,17 +103,6 @@ func (g *GeoM) Concat(other GeoM) {
 	g.ty = ty
 }
 
-// Add is deprecated as of 1.5.0-alpha.
-// Note that this doesn't make sense as an operation for affine matrices.
-func (g *GeoM) Add(other GeoM) {
-	g.a_1 += other.a_1
-	g.b += other.b
-	g.c += other.c
-	g.d_1 += other.d_1
-	g.tx += other.tx
-	g.ty += other.ty
-}
-
 // Scale scales the matrix by (x, y).
 func (g *GeoM) Scale(x, y float64) {
 	a := (float64(g.a_1) + 1) * x
@@ -214,25 +203,4 @@ func (g *GeoM) SetElement(i, j int, element float64) {
 	default:
 		panic("ebiten: i or j is out of index")
 	}
-}
-
-// ScaleGeo is deprecated as of 1.2.0-alpha. Use Scale instead.
-func ScaleGeo(x, y float64) GeoM {
-	g := GeoM{}
-	g.Scale(x, y)
-	return g
-}
-
-// TranslateGeo is deprecated as of 1.2.0-alpha. Use Translate instead.
-func TranslateGeo(tx, ty float64) GeoM {
-	g := GeoM{}
-	g.Translate(tx, ty)
-	return g
-}
-
-// RotateGeo is deprecated as of 1.2.0-alpha. Use Rotate instead.
-func RotateGeo(theta float64) GeoM {
-	g := GeoM{}
-	g.Rotate(theta)
-	return g
 }
