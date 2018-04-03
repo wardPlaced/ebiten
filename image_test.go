@@ -119,36 +119,19 @@ func TestImageComposition(t *testing.T) {
 
 	w, h := img1.Bounds().Size().X, img1.Bounds().Size().Y
 
-	img2, err := NewImage(w, h, FilterNearest)
-	if err != nil {
-		t.Fatal(err)
-		return
-	}
-
-	img3, err := NewImage(w, h, FilterNearest)
-	if err != nil {
-		t.Fatal(err)
-		return
-	}
+	img2 := NewImage(w, h, FilterNearest)
+	img3 := NewImage(w, h, FilterNearest)
 
 	img2.Fill(img2Color)
 	img3.Fill(img3Color)
-	img_12_3, err := NewImage(w, h, FilterNearest)
-	if err != nil {
-		t.Fatal(err)
-		return
-	}
+	img_12_3 := NewImage(w, h, FilterNearest)
 	img2.DrawImage(img1, nil)
 	img3.DrawImage(img2, nil)
 	img_12_3.DrawImage(img3, nil)
 
 	img2.Fill(img2Color)
 	img3.Fill(img3Color)
-	img_1_23, err := NewImage(w, h, FilterNearest)
-	if err != nil {
-		t.Fatal(err)
-		return
-	}
+	img_1_23 := NewImage(w, h, FilterNearest)
 	img3.DrawImage(img2, nil)
 	img3.DrawImage(img1, nil)
 	img_1_23.DrawImage(img3, nil)
@@ -193,11 +176,7 @@ func TestImageScale(t *testing.T) {
 			return
 		}
 		w, h := img0.Size()
-		img1, err := NewImage(w*scale, h*scale, FilterNearest)
-		if err != nil {
-			t.Fatal(err)
-			return
-		}
+		img1 := NewImage(w*scale, h*scale, FilterNearest)
 		op := &DrawImageOptions{}
 		op.GeoM.Scale(float64(scale), float64(scale))
 
@@ -222,11 +201,7 @@ func TestImage90DegreeRotate(t *testing.T) {
 		return
 	}
 	w, h := img0.Size()
-	img1, err := NewImage(h, w, FilterNearest)
-	if err != nil {
-		t.Fatal(err)
-		return
-	}
+	img1 := NewImage(h, w, FilterNearest)
 	op := &DrawImageOptions{}
 	op.GeoM.Rotate(math.Pi / 2)
 	op.GeoM.Translate(float64(h), 0)
@@ -250,11 +225,7 @@ func TestImageDotByDotInversion(t *testing.T) {
 		return
 	}
 	w, h := img0.Size()
-	img1, err := NewImage(w, h, FilterNearest)
-	if err != nil {
-		t.Fatal(err)
-		return
-	}
+	img1 := NewImage(w, h, FilterNearest)
 	op := &DrawImageOptions{}
 	op.GeoM.Rotate(math.Pi)
 	op.GeoM.Translate(float64(w), float64(h))
@@ -286,11 +257,7 @@ func TestImageReplacePixels(t *testing.T) {
 	draw.Draw(img, img.Bounds(), origImg, image.ZP, draw.Src)
 
 	size := img.Bounds().Size()
-	img0, err := NewImage(size.X, size.Y, FilterNearest)
-	if err != nil {
-		t.Fatal(err)
-		return
-	}
+	img0 := NewImage(size.X, size.Y, FilterNearest)
 
 	img0.ReplacePixels(img.Pix)
 	for j := 0; j < img0.Bounds().Size().Y; j++ {
@@ -324,11 +291,7 @@ func TestImageReplacePixels(t *testing.T) {
 }
 
 func TestImageDispose(t *testing.T) {
-	img, err := NewImage(16, 16, FilterNearest)
-	if err != nil {
-		t.Fatal(err)
-		return
-	}
+	img := NewImage(16, 16, FilterNearest)
 	img.Fill(color.White)
 	img.Dispose()
 
@@ -356,11 +319,7 @@ func TestImageCompositeModeLighter(t *testing.T) {
 	}
 
 	w, h := img0.Size()
-	img1, err := NewImage(w, h, FilterNearest)
-	if err != nil {
-		t.Fatal(err)
-		return
-	}
+	img1 := NewImage(w, h, FilterNearest)
 	img1.Fill(color.RGBA{0x01, 0x02, 0x03, 0x04})
 	op := &DrawImageOptions{}
 	op.CompositeMode = CompositeModeLighter
@@ -433,11 +392,7 @@ func (c *mutableRGBA) RGBA() (r, g, b, a uint32) {
 
 func TestImageFill(t *testing.T) {
 	w, h := 10, 10
-	img, err := NewImage(w, h, FilterNearest)
-	if err != nil {
-		t.Fatal(err)
-		return
-	}
+	img := NewImage(w, h, FilterNearest)
 	clr := &mutableRGBA{0x80, 0x80, 0x80, 0x80}
 	img.Fill(clr)
 	clr.r = 0
@@ -460,7 +415,7 @@ func TestImageEdge(t *testing.T) {
 		img1Width  = 32
 		img1Height = 32
 	)
-	img0, _ := NewImage(img0Width, img0Height, FilterNearest)
+	img0 := NewImage(img0Width, img0Height, FilterNearest)
 	pixels := make([]uint8, 4*img0Width*img0Height)
 	for j := 0; j < img0Height; j++ {
 		for i := 0; i < img0Width; i++ {
@@ -480,7 +435,7 @@ func TestImageEdge(t *testing.T) {
 		}
 	}
 	img0.ReplacePixels(pixels)
-	img1, _ := NewImage(img1Width, img1Height, FilterDefault)
+	img1 := NewImage(img1Width, img1Height, FilterDefault)
 	red := color.RGBA{0xff, 0, 0, 0xff}
 	transparent := color.RGBA{0, 0, 0, 0}
 
@@ -536,8 +491,8 @@ func TestImageTooManyFill(t *testing.T) {
 		return uint8((17*index + 0x40) % 256)
 	}
 
-	src, _ := NewImage(1, 1, FilterNearest)
-	dst, _ := NewImage(width, 1, FilterNearest)
+	src := NewImage(1, 1, FilterNearest)
+	dst := NewImage(width, 1, FilterNearest)
 	for i := 0; i < width; i++ {
 		c := indexToColor(i)
 		src.Fill(color.RGBA{c, c, c, 0xff})
@@ -557,8 +512,8 @@ func TestImageTooManyFill(t *testing.T) {
 }
 
 func BenchmarkDrawImage(b *testing.B) {
-	img0, _ := NewImage(16, 16, FilterNearest)
-	img1, _ := NewImage(16, 16, FilterNearest)
+	img0 := NewImage(16, 16, FilterNearest)
+	img1 := NewImage(16, 16, FilterNearest)
 	op := &DrawImageOptions{}
 	for i := 0; i < b.N; i++ {
 		img0.DrawImage(img1, op)
@@ -566,8 +521,8 @@ func BenchmarkDrawImage(b *testing.B) {
 }
 
 func TestImageLinear(t *testing.T) {
-	src, _ := NewImage(32, 32, FilterDefault)
-	dst, _ := NewImage(64, 64, FilterDefault)
+	src := NewImage(32, 32, FilterDefault)
+	dst := NewImage(64, 64, FilterDefault)
 	src.Fill(color.RGBA{0, 0xff, 0, 0xff})
 	ebitenutil.DrawRect(src, 8, 8, 16, 16, color.RGBA{0xff, 0, 0, 0xff})
 
@@ -592,8 +547,8 @@ func TestImageLinear(t *testing.T) {
 }
 
 func TestImageOutside(t *testing.T) {
-	src, _ := NewImage(5, 10, FilterNearest) // internal texture size is 8x16.
-	dst, _ := NewImage(4, 4, FilterNearest)
+	src := NewImage(5, 10, FilterNearest) // internal texture size is 8x16.
+	dst := NewImage(4, 4, FilterNearest)
 	src.Fill(color.RGBA{0xff, 0, 0, 0xff})
 
 	cases := []struct {
@@ -635,9 +590,9 @@ func TestImageOutside(t *testing.T) {
 }
 
 func TestImageOutsideUpperLeft(t *testing.T) {
-	src, _ := NewImage(4, 4, FilterNearest)
-	dst1, _ := NewImage(16, 16, FilterNearest)
-	dst2, _ := NewImage(16, 16, FilterNearest)
+	src := NewImage(4, 4, FilterNearest)
+	dst1 := NewImage(16, 16, FilterNearest)
+	dst2 := NewImage(16, 16, FilterNearest)
 	src.Fill(color.RGBA{0xff, 0, 0, 0xff})
 
 	op := &DrawImageOptions{}
@@ -667,7 +622,7 @@ func TestImageSize(t *testing.T) {
 		w = 17
 		h = 31
 	)
-	img, _ := NewImage(w, h, FilterDefault)
+	img := NewImage(w, h, FilterDefault)
 	gotW, gotH := img.Size()
 	if gotW != w {
 		t.Errorf("got: %d, want: %d", gotW, w)
@@ -678,8 +633,8 @@ func TestImageSize(t *testing.T) {
 }
 
 func TestImageSize1(t *testing.T) {
-	src, _ := NewImage(1, 1, FilterNearest)
-	dst, _ := NewImage(1, 1, FilterNearest)
+	src := NewImage(1, 1, FilterNearest)
+	dst := NewImage(1, 1, FilterNearest)
 	src.Fill(color.White)
 	dst.DrawImage(src, nil)
 	got := color.RGBAModel.Convert(src.At(0, 0)).(color.RGBA)
@@ -690,8 +645,8 @@ func TestImageSize1(t *testing.T) {
 }
 
 func TestImageSize4096(t *testing.T) {
-	src, _ := NewImage(4096, 4096, FilterNearest)
-	dst, _ := NewImage(4096, 4096, FilterNearest)
+	src := NewImage(4096, 4096, FilterNearest)
+	dst := NewImage(4096, 4096, FilterNearest)
 	pix := make([]byte, 4096*4096*4)
 	for i := 0; i < 4096; i++ {
 		j := 4095
@@ -736,13 +691,13 @@ func TestImageCopy(t *testing.T) {
 		}
 	}()
 
-	img0, _ := NewImage(256, 256, FilterDefault)
+	img0 := NewImage(256, 256, FilterDefault)
 	img1 := *img0
 	img1.Fill(color.Transparent)
 }
 
 func TestImageStretch(t *testing.T) {
-	img0, _ := NewImage(16, 17, FilterDefault)
+	img0 := NewImage(16, 17, FilterDefault)
 
 	pix := make([]byte, 4*16*17)
 	for i := 0; i < 16*16; i++ {
@@ -757,7 +712,7 @@ func TestImageStretch(t *testing.T) {
 
 	// TODO: 4096 doesn't pass on MacBook Pro (#611).
 	const h = 2048
-	img1, _ := NewImage(16, h, FilterDefault)
+	img1 := NewImage(16, h, FilterDefault)
 	for i := 1; i < h; i++ {
 		img1.Clear()
 		op := &DrawImageOptions{}
@@ -784,9 +739,9 @@ func TestSprites(t *testing.T) {
 		height = 512
 	)
 
-	src, _ := NewImage(4, 4, FilterNearest)
+	src := NewImage(4, 4, FilterNearest)
 	src.Fill(color.RGBA{0xff, 0xff, 0xff, 0xff})
-	dst, _ := NewImage(width, height, FilterNearest)
+	dst := NewImage(width, height, FilterNearest)
 	for j := 0; j < height/4; j++ {
 		for i := 0; i < width/4; i++ {
 			op := &DrawImageOptions{}

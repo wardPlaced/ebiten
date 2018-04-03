@@ -66,7 +66,7 @@ func init() {
 	}
 	fgImage, _ = ebiten.NewImageFromImage(img, ebiten.FilterDefault)
 
-	maskedFgImage, _ = ebiten.NewImage(screenWidth, screenHeight, ebiten.FilterDefault)
+	maskedFgImage = ebiten.NewImage(screenWidth, screenHeight, ebiten.FilterDefault)
 
 	// Initialize the spot light image.
 	const r = 64

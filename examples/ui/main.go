@@ -357,7 +357,7 @@ func (t *TextBox) Draw(dst *ebiten.Image) {
 	}
 	if t.contentBuf == nil {
 		w, h := t.viewSize()
-		t.contentBuf, _ = ebiten.NewImage(w, h, ebiten.FilterDefault)
+		t.contentBuf = ebiten.NewImage(w, h, ebiten.FilterDefault)
 	}
 
 	t.contentBuf.Clear()

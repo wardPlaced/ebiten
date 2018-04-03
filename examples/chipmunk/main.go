@@ -29,11 +29,10 @@ import (
 
 var (
 	space *cp.Space
-	dot   *ebiten.Image
+	dot   = ebiten.NewImage(1, 1, ebiten.FilterNearest)
 )
 
 func init() {
-	dot, _ = ebiten.NewImage(1, 1, ebiten.FilterNearest)
 	dot.Fill(color.White)
 }
 

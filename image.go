@@ -28,11 +28,7 @@ import (
 // emptyImage is an empty image used for filling other images with a uniform color.
 //
 // Do not call Fill or Clear on emptyImage or the program causes infinite recursion.
-var emptyImage *Image
-
-func init() {
-	emptyImage, _ = NewImage(16, 16, FilterDefault)
-}
+var emptyImage = NewImage(16, 16, FilterDefault)
 
 // Image represents a rectangle set of pixels.
 // The pixel format is alpha-premultiplied RGBA.
@@ -312,9 +308,7 @@ type DrawImageOptions struct {
 //
 // filter argument is just for backward compatibility.
 // If you are not sure, specify FilterDefault.
-//
-// Error returned by NewImage is always nil as of 1.5.0-alpha.
-func NewImage(width, height int, filter Filter) (*Image, error) {
+func NewImage(width, height int, filter Filter) *Image {
 	s := shareable.NewImage(width, height)
 	i := &Image{
 		shareableImage: s,
@@ -322,7 +316,7 @@ func NewImage(width, height int, filter Filter) (*Image, error) {
 	}
 	i.addr = i
 	runtime.SetFinalizer(i, (*Image).Dispose)
-	return i, nil
+	return i
 }
 
 // newVolatileImage returns an empty 'volatile' image.

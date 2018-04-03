@@ -67,12 +67,12 @@ func init() {
 	}
 	gophersImage, _ = ebiten.NewImageFromImage(img, ebiten.FilterDefault)
 
-	groundImage, _ = ebiten.NewImage(screenWidth*2, screenHeight*2/3+50, ebiten.FilterDefault)
-	perspectiveGroundImage, _ = ebiten.NewImage(screenWidth*2, screenHeight, ebiten.FilterDefault)
+	groundImage = ebiten.NewImage(screenWidth*2, screenHeight*2/3+50, ebiten.FilterDefault)
+	perspectiveGroundImage = ebiten.NewImage(screenWidth*2, screenHeight, ebiten.FilterDefault)
 
 	const repeat = 5
 	w, h := gophersImage.Size()
-	repeatedGophersImage, _ = ebiten.NewImage(w*repeat, h*repeat, ebiten.FilterDefault)
+	repeatedGophersImage = ebiten.NewImage(w*repeat, h*repeat, ebiten.FilterDefault)
 	for j := 0; j < repeat; j++ {
 		for i := 0; i < repeat; i++ {
 			op := &ebiten.DrawImageOptions{}

@@ -75,7 +75,7 @@ func update(screen *ebiten.Image) error {
 
 func main() {
 	w, h := gophersImage.Size()
-	gophersRenderTarget, _ = ebiten.NewImage(w/mosaicRatio, h/mosaicRatio, ebiten.FilterDefault)
+	gophersRenderTarget = ebiten.NewImage(w/mosaicRatio, h/mosaicRatio, ebiten.FilterDefault)
 	if err := ebiten.Run(update, screenWidth, screenHeight, 2, "Mosaic (Ebiten Demo)"); err != nil {
 		log.Fatal(err)
 	}
