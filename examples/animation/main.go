@@ -74,7 +74,7 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	runnerImage, _ = ebiten.NewImageFromImage(img, ebiten.FilterDefault)
+	runnerImage = ebiten.NewImageFromImage(img)
 
 	if err := ebiten.Run(update, screenWidth, screenHeight, 2, "Animation (Ebiten Demo)"); err != nil {
 		log.Fatal(err)

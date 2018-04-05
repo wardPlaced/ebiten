@@ -19,8 +19,8 @@ import (
 )
 
 var (
-	transitionFrom = ebiten.NewImage(ScreenWidth, ScreenHeight, ebiten.FilterDefault)
-	transitionTo   = ebiten.NewImage(ScreenWidth, ScreenHeight, ebiten.FilterDefault)
+	transitionFrom = ebiten.NewImage(ScreenWidth, ScreenHeight)
+	transitionTo   = ebiten.NewImage(ScreenWidth, ScreenHeight)
 )
 
 type Scene interface {

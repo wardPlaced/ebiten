@@ -81,7 +81,7 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	ebitenImage, _ = ebiten.NewImageFromImage(img, ebiten.FilterDefault)
+	ebitenImage = ebiten.NewImageFromImage(img)
 
 	if err := ebiten.Run(update, screenWidth, screenHeight, 2, "Alpha Blending (Ebiten Demo)"); err != nil {
 		log.Fatal(err)

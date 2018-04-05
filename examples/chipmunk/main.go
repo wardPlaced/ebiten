@@ -29,7 +29,7 @@ import (
 
 var (
 	space *cp.Space
-	dot   = ebiten.NewImage(1, 1, ebiten.FilterNearest)
+	dot   = ebiten.NewImage(1, 1)
 )
 
 func init() {

@@ -70,7 +70,7 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	gophersImage, _ = ebiten.NewImageFromImage(img, ebiten.FilterDefault)
+	gophersImage = ebiten.NewImageFromImage(img)
 
 	if err := ebiten.Run(update, screenWidth, screenHeight, 2, "Hue (Ebiten Demo)"); err != nil {
 		log.Fatal(err)

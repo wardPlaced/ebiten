@@ -42,7 +42,7 @@ func init() {
 		log.Fatal(err)
 	}
 
-	keyboardImage, _ = ebiten.NewImageFromImage(img, ebiten.FilterDefault)
+	keyboardImage = ebiten.NewImageFromImage(img)
 }
 
 func update(screen *ebiten.Image) error {

@@ -342,7 +342,7 @@ const (
 )
 
 var (
-	tileImage = ebiten.NewImage(tileSize, tileSize, ebiten.FilterDefault)
+	tileImage = ebiten.NewImage(tileSize, tileSize)
 )
 
 func init() {

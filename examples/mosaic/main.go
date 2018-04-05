@@ -52,7 +52,7 @@ func init() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	gophersImage, _ = ebiten.NewImageFromImage(img, ebiten.FilterDefault)
+	gophersImage = ebiten.NewImageFromImage(img)
 }
 
 func update(screen *ebiten.Image) error {
@@ -75,7 +75,7 @@ func update(screen *ebiten.Image) error {
 
 func main() {
 	w, h := gophersImage.Size()
-	gophersRenderTarget = ebiten.NewImage(w/mosaicRatio, h/mosaicRatio, ebiten.FilterDefault)
+	gophersRenderTarget = ebiten.NewImage(w/mosaicRatio, h/mosaicRatio)
 	if err := ebiten.Run(update, screenWidth, screenHeight, 2, "Mosaic (Ebiten Demo)"); err != nil {
 		log.Fatal(err)
 	}

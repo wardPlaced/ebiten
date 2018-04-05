@@ -30,7 +30,7 @@ const (
 )
 
 var (
-	offscreen    = ebiten.NewImage(screenWidth, screenHeight, ebiten.FilterDefault)
+	offscreen    = ebiten.NewImage(screenWidth, screenHeight)
 	offscreenPix = make([]byte, screenWidth*screenHeight*4)
 	palette      [maxIt]byte
 )

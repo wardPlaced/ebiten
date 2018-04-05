@@ -56,7 +56,7 @@ func init() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	tilesImage, _ = ebiten.NewImageFromImage(img, ebiten.FilterDefault)
+	tilesImage = ebiten.NewImageFromImage(img)
 }
 
 var (

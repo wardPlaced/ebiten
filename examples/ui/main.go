@@ -58,7 +58,7 @@ func init() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	uiImage, _ = ebiten.NewImageFromImage(img, ebiten.FilterDefault)
+	uiImage = ebiten.NewImageFromImage(img)
 
 	tt, err := truetype.Parse(goregular.TTF)
 	if err != nil {
@@ -357,7 +357,7 @@ func (t *TextBox) Draw(dst *ebiten.Image) {
 	}
 	if t.contentBuf == nil {
 		w, h := t.viewSize()
-		t.contentBuf = ebiten.NewImage(w, h, ebiten.FilterDefault)
+		t.contentBuf = ebiten.NewImage(w, h)
 	}
 
 	t.contentBuf.Clear()

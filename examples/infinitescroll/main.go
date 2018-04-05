@@ -51,7 +51,7 @@ func init() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	bgImage, _ = ebiten.NewImageFromImage(img, ebiten.FilterDefault)
+	bgImage = ebiten.NewImageFromImage(img)
 }
 
 var (

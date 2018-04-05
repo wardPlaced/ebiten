@@ -32,8 +32,8 @@ import (
 
 var (
 	imageGameBG   *ebiten.Image
-	imageWindows  = ebiten.NewImage(ScreenWidth, ScreenHeight, ebiten.FilterDefault)
-	imageGameover = ebiten.NewImage(ScreenWidth, ScreenHeight, ebiten.FilterDefault)
+	imageWindows  = ebiten.NewImage(ScreenWidth, ScreenHeight)
+	imageGameover = ebiten.NewImage(ScreenWidth, ScreenHeight)
 )
 
 func fieldWindowPosition() (x, y int) {
@@ -76,7 +76,7 @@ func init() {
 	if err != nil {
 		panic(err)
 	}
-	imageGameBG, _ = ebiten.NewImageFromImage(img, ebiten.FilterDefault)
+	imageGameBG = ebiten.NewImageFromImage(img)
 
 	// Windows: Field
 	x, y := fieldWindowPosition()

@@ -28,7 +28,7 @@ import (
 // emptyImage is an empty image used for filling other images with a uniform color.
 //
 // Do not call Fill or Clear on emptyImage or the program causes infinite recursion.
-var emptyImage = NewImage(16, 16, FilterDefault)
+var emptyImage = NewImage(16, 16)
 
 // Image represents a rectangle set of pixels.
 // The pixel format is alpha-premultiplied RGBA.
@@ -290,29 +290,17 @@ type DrawImageOptions struct {
 	CompositeMode CompositeMode
 
 	// Filter is a type of texture filter.
-	// The default (zero) value is FilterDefault.
-	//
-	// Filter can also be specified at NewImage* functions, but
-	// specifying filter at DrawImageOptions is recommended (as of 1.7.0-alpha).
-	//
-	// If both Filter specified at NewImage* and DrawImageOptions are FilterDefault,
-	// FilterNearest is used.
-	// If either is FilterDefault and the other is not, the latter is used.
-	// Otherwise, Filter specified at DrawImageOptions is used.
+	// The default (zero) value is FilterDefault, which is same as FilterNearest.
 	Filter Filter
 }
 
 // NewImage returns an empty image.
 //
 // If width or height is less than 1 or more than device-dependent maximum size, NewImage panics.
-//
-// filter argument is just for backward compatibility.
-// If you are not sure, specify FilterDefault.
-func NewImage(width, height int, filter Filter) *Image {
+func NewImage(width, height int) *Image {
 	s := shareable.NewImage(width, height)
 	i := &Image{
 		shareableImage: s,
-		filter:         filter,
 	}
 	i.addr = i
 	runtime.SetFinalizer(i, (*Image).Dispose)
@@ -344,12 +332,7 @@ func newVolatileImage(width, height int) *Image {
 // NewImageFromImage creates a new image with the given image (source).
 //
 // If source's width or height is less than 1 or more than device-dependent maximum size, NewImageFromImage panics.
-//
-// filter argument is just for backward compatibility.
-// If you are not sure, specify FilterDefault.
-//
-// Error returned by NewImageFromImage is always nil as of 1.5.0-alpha.
-func NewImageFromImage(source image.Image, filter Filter) (*Image, error) {
+func NewImageFromImage(source image.Image) *Image {
 	size := source.Bounds().Size()
 
 	width, height := size.X, size.Y
@@ -357,13 +340,12 @@ func NewImageFromImage(source image.Image, filter Filter) (*Image, error) {
 	s := shareable.NewImage(width, height)
 	i := &Image{
 		shareableImage: s,
-		filter:         filter,
 	}
 	i.addr = i
 	runtime.SetFinalizer(i, (*Image).Dispose)
 
 	i.ReplacePixels(graphicsutil.CopyImage(source))
-	return i, nil
+	return i
 }
 
 func newImageWithScreenFramebuffer(width, height int) *Image {

@@ -28,7 +28,7 @@ var (
 
 func init() {
 	img := assets.CreateTextImage()
-	debugPrintTextImage, _ = ebiten.NewImageFromImage(img, ebiten.FilterDefault)
+	debugPrintTextImage = ebiten.NewImageFromImage(img)
 
 	// Using color matrices for shadow color is not efficient.
 	// Instead, use a different image, that shares the same texture in highly possibility.
@@ -44,7 +44,7 @@ func init() {
 			}
 		}
 	}
-	debugPrintTextShadowImage, _ = ebiten.NewImageFromImage(img, ebiten.FilterDefault)
+	debugPrintTextShadowImage = ebiten.NewImageFromImage(img)
 }
 
 // DebugPrint draws the string str on the image.

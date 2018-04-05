@@ -39,6 +39,5 @@ func NewImageFromURL(url string) (*ebiten.Image, error) {
 		return nil, err
 	}
 
-	eimg, _ := ebiten.NewImageFromImage(img, ebiten.FilterDefault)
-	return eimg, nil
+	return ebiten.NewImageFromImage(img), nil
 }
