@@ -203,7 +203,7 @@ func init() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	ebitenImage := ebiten.NewImageFromImage(img, ebiten.FilterDefault)
+	ebitenImage := ebiten.NewImageFromImage(img)
 
 	// Initialize the sprites.
 	sprites := []*Sprite{}

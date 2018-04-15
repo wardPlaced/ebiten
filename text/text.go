@@ -180,7 +180,7 @@ func getGlyphImages(face font.Face, runes []rune) []*glyphImage {
 			x += w
 		}
 
-		img := ebiten.NewImageFromImage(rgba, ebiten.FilterDefault)
+		img := ebiten.NewImageFromImage(rgba)
 		for i, r := range neededGlyphIndices {
 			b := glyphBounds[r]
 			w, h := (b.Max.X - b.Min.X).Ceil(), (b.Max.Y - b.Min.Y).Ceil()

@@ -730,9 +730,9 @@ func TestSprites(t *testing.T) {
 		height = 512
 	)
 
-	src := NewImage(4, 4, FilterNearest)
+	src := NewImage(4, 4)
 	src.Fill(color.RGBA{0xff, 0xff, 0xff, 0xff})
-	dst := NewImage(width, height, FilterNearest)
+	dst := NewImage(width, height)
 	for j := 0; j < height/4; j++ {
 		for i := 0; i < width/4; i++ {
 			op := &DrawImageOptions{}
