@@ -33,8 +33,6 @@ var emptyImage = NewImage(16, 16)
 // Image represents a rectangle set of pixels.
 // The pixel format is alpha-premultiplied RGBA.
 // Image implements image.Image.
-//
-// Functions of Image never returns error as of 1.5.0-alpha, and error values are always nil.
 type Image struct {
 	// addr holds self to check copying.
 	// See strings.Builder for similar examples.
