@@ -78,7 +78,7 @@ func update(screen *ebiten.Image) error {
 		}
 		op.GeoM.Translate(float64(r.Min.X), float64(r.Min.Y))
 		op.GeoM.Translate(offsetX, offsetY)
-		op.SourceRect = &r
+		op.SourceRect.Set(r.Min.X, r.Min.Y, r.Max.X, r.Max.Y)
 		screen.DrawImage(keyboardImage, op)
 	}
 

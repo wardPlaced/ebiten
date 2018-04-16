@@ -154,14 +154,14 @@ func (i *Image) DrawImage(img *Image, options *DrawImageOptions) {
 
 	w, h := img.Size()
 	sx0, sy0, sx1, sy1 := 0, 0, w, h
-	if r := options.SourceRect; r != nil {
-		sx0 = r.Min.X
-		sy0 = r.Min.Y
-		if sx1 > r.Max.X {
-			sx1 = r.Max.X
+	if r := options.SourceRect; r.valid {
+		sx0 = r.x0
+		sy0 = r.y0
+		if sx1 > r.x1 {
+			sx1 = r.x1
 		}
-		if sy1 > r.Max.Y {
-			sy1 = r.Max.Y
+		if sy1 > r.y1 {
+			sy1 = r.y1
 		}
 	}
 	geom := &options.GeoM
@@ -247,23 +247,68 @@ func (i *Image) ReplacePixels(p []byte) {
 	i.shareableImage.ReplacePixels(p)
 }
 
+// SourceRect represents a rectangle to specify drawing range.
+//
+// The default (zero) value means that the whole source image is used.
+type SourceRect struct {
+	valid bool
+	x0    int
+	y0    int
+	x1    int
+	y1    int
+}
+
+// Reset resets the SourceRect as the zero value.
+func (s *SourceRect) Reset() {
+	s.valid = false
+	s.x0 = 0
+	s.y0 = 0
+	s.x1 = 0
+	s.y1 = 0
+}
+
+// Set sets the source rectangle.
+//
+// x0, y0 means the minimum (upper-left) values,
+// and x1, y1 means the maximum (lower-right) values.
+// If x0 > x1 or y0 > y1, they are swapped.
+func (s *SourceRect) Set(x0, y0, x1, y1 int) {
+	s.valid = true
+	if x0 > x1 {
+		x0, x1 = x1, x0
+	}
+	if y0 > y1 {
+		y0, y1 = y1, y0
+	}
+	s.x0 = x0
+	s.y0 = y0
+	s.x1 = x1
+	s.y1 = y1
+}
+
+// Get returns the source rect values.
+//
+// If s is the default value, valid is false.
+func (s *SourceRect) Get() (x0, y0, x1, y1 int, valid bool) {
+	return s.x0, s.y0, s.x1, s.y1, s.valid
+}
+
 // A DrawImageOptions represents options to render an image on an image.
 type DrawImageOptions struct {
 	// SourceRect is the region of the source image to draw.
-	// If SourceRect is nil, whole image is used.
+	// The default (zero) value means that whole image is used.
 	//
 	// It is assured that texels out of the SourceRect are never used.
 	//
-	// Calling DrawImage copies the content of SourceRect pointer. This means that
+	// Calling DrawImage copies the content of SourceRect value. This means that
 	// even if the SourceRect value is modified after passed to DrawImage,
 	// the result of DrawImage doen't change.
 	//
 	//     op := &ebiten.DrawImageOptions{}
-	//     r := image.Rect(0, 0, 100, 100)
-	//     op.SourceRect = &r
+	//     op.SourceRect.Set(0, 0, 100, 100)
 	//     dst.DrawImage(src, op)
-	//     r.Min.X = 10 // This doesn't affect the previous DrawImage.
-	SourceRect *image.Rectangle
+	//     op.SourceRect.Set(10, 10, 110, 110) // This doesn't affect the previous DrawImage.
+	SourceRect SourceRect
 
 	// GeoM is a geometry matrix to draw.
 	// The default (zero) value is identify, which draws the image at (0, 0).

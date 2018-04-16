@@ -443,8 +443,7 @@ func TestImageEdge(t *testing.T) {
 			img1.Clear()
 			op := &DrawImageOptions{}
 			w, h := img0.Size()
-			r := image.Rect(0, 0, w, h/2)
-			op.SourceRect = &r
+			op.SourceRect.Set(0, 0, w, h/2)
 			op.GeoM.Translate(-float64(img0Width)/2, -float64(img0Height)/2)
 			op.GeoM.Rotate(a)
 			op.GeoM.Translate(img1Width/2, img1Height/2)
@@ -520,8 +519,7 @@ func TestImageLinear(t *testing.T) {
 	op := &DrawImageOptions{}
 	op.GeoM.Translate(8, 8)
 	op.GeoM.Scale(2, 2)
-	r := image.Rect(8, 8, 24, 24)
-	op.SourceRect = &r
+	op.SourceRect.Set(8, 8, 24, 24)
 	op.Filter = FilterLinear
 	dst.DrawImage(src, op)
 
@@ -534,6 +532,29 @@ func TestImageLinear(t *testing.T) {
 				t.Errorf("dst At(%d, %d).G: got %#v, want: %#v", i, j, got, want)
 			}
 		}
+	}
+}
+
+func TestSourcrRect(t *testing.T) {
+	var s SourceRect
+	s.Set(1, 2, -3, -4)
+	x0, y0, x1, y1, valid := s.Get()
+	if !valid {
+		t.Errorf("s.Get() should be valid but not")
+	}
+	got := image.Rectangle{
+		Min: image.Pt(x0, y0),
+		Max: image.Pt(x1, y1),
+	}
+	want := image.Rect(-3, -4, 1, 2)
+	if got != want {
+		t.Errorf("s.Get(): got: %v, want: %v", got, want)
+	}
+
+	s.Reset()
+	_, _, _, _, valid = s.Get()
+	if valid {
+		t.Errorf("s.Get() should be not valid but valid")
 	}
 }
 
@@ -555,17 +576,15 @@ func TestImageOutside(t *testing.T) {
 		{8, -4, 4, 4},
 		{-4, 16, 4, 4},
 		{5, 10, 0, 0},
-		{5, 10, -2, -2}, // non-well-formed rectangle
+		{0, 0, -2, -2},
+		{7, 12, -2, -2},
 	}
 	for _, c := range cases {
 		dst.Clear()
 
 		op := &DrawImageOptions{}
 		op.GeoM.Translate(0, 0)
-		op.SourceRect = &image.Rectangle{
-			Min: image.Pt(c.X, c.Y),
-			Max: image.Pt(c.X+c.Width, c.Y+c.Height),
-		}
+		op.SourceRect.Set(c.X, c.Y, c.X+c.Width, c.Y+c.Height)
 		dst.DrawImage(src, op)
 
 		for j := 0; j < 4; j++ {
@@ -588,8 +607,7 @@ func TestImageOutsideUpperLeft(t *testing.T) {
 
 	op := &DrawImageOptions{}
 	op.GeoM.Rotate(math.Pi / 4)
-	r := image.Rect(-4, -4, 8, 8)
-	op.SourceRect = &r
+	op.SourceRect.Set(-4, -4, 8, 8)
 	dst1.DrawImage(src, op)
 
 	op = &DrawImageOptions{}
@@ -708,8 +726,7 @@ func TestImageStretch(t *testing.T) {
 		img1.Clear()
 		op := &DrawImageOptions{}
 		op.GeoM.Scale(1, float64(i)/16)
-		r := image.Rect(0, 0, 16, 16)
-		op.SourceRect = &r
+		op.SourceRect.Set(0, 0, 16, 16)
 		img1.DrawImage(img0, op)
 		for j := -1; j <= 1; j++ {
 			got := img1.At(0, i+j).(color.RGBA)

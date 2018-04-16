@@ -343,8 +343,7 @@ func (g *Game) drawTiles(screen *ebiten.Image) {
 		op.GeoM.Reset()
 		op.GeoM.Translate(float64(i*tileSize-floorMod(g.cameraX, tileSize)),
 			float64((ny-1)*tileSize-floorMod(g.cameraY, tileSize)))
-		r := image.Rect(0, 0, tileSize, tileSize)
-		op.SourceRect = &r
+		op.SourceRect.Set(0, 0, tileSize, tileSize)
 		screen.DrawImage(tilesImage, op)
 
 		// pipe
@@ -356,11 +355,9 @@ func (g *Game) drawTiles(screen *ebiten.Image) {
 					float64(j*tileSize-floorMod(g.cameraY, tileSize)))
 				op.GeoM.Translate(0, tileSize)
 				if j == tileY-1 {
-					r := image.Rect(pipeTileSrcX, pipeTileSrcY, pipeTileSrcX+tileSize*2, pipeTileSrcY+tileSize)
-					op.SourceRect = &r
+					op.SourceRect.Set(pipeTileSrcX, pipeTileSrcY, pipeTileSrcX+tileSize*2, pipeTileSrcY+tileSize)
 				} else {
-					r := image.Rect(pipeTileSrcX, pipeTileSrcY+tileSize, pipeTileSrcX+tileSize*2, pipeTileSrcY+tileSize*2)
-					op.SourceRect = &r
+					op.SourceRect.Set(pipeTileSrcX, pipeTileSrcY+tileSize, pipeTileSrcX+tileSize*2, pipeTileSrcY+tileSize*2)
 				}
 				screen.DrawImage(tilesImage, op)
 			}
@@ -369,11 +366,9 @@ func (g *Game) drawTiles(screen *ebiten.Image) {
 				op.GeoM.Translate(float64(i*tileSize-floorMod(g.cameraX, tileSize)),
 					float64(j*tileSize-floorMod(g.cameraY, tileSize)))
 				if j == tileY+pipeGapY {
-					r := image.Rect(pipeTileSrcX, pipeTileSrcY, pipeTileSrcX+pipeWidth, pipeTileSrcY+tileSize)
-					op.SourceRect = &r
+					op.SourceRect.Set(pipeTileSrcX, pipeTileSrcY, pipeTileSrcX+pipeWidth, pipeTileSrcY+tileSize)
 				} else {
-					r := image.Rect(pipeTileSrcX, pipeTileSrcY+tileSize, pipeTileSrcX+pipeWidth, pipeTileSrcY+tileSize+tileSize)
-					op.SourceRect = &r
+					op.SourceRect.Set(pipeTileSrcX, pipeTileSrcY+tileSize, pipeTileSrcX+pipeWidth, pipeTileSrcY+tileSize+tileSize)
 				}
 				screen.DrawImage(tilesImage, op)
 			}

@@ -31,7 +31,6 @@ func init() {
 		panic(err)
 	}
 	imageBlocks = ebiten.NewImageFromImage(img)
-
 }
 
 type Angle int
@@ -175,8 +174,7 @@ func drawBlock(r *ebiten.Image, block BlockType, x, y int, clr ebiten.ColorM) {
 	op.GeoM.Translate(float64(x), float64(y))
 
 	srcX := (int(block) - 1) * blockWidth
-	src := image.Rect(srcX, 0, srcX+blockWidth, blockHeight)
-	op.SourceRect = &src
+	op.SourceRect.Set(srcX, 0, srcX+blockWidth, blockHeight)
 	r.DrawImage(imageBlocks, op)
 }
 
