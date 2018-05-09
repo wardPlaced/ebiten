@@ -140,22 +140,3 @@ func TouchPosition(id int) (int, int) {
 	}
 	return 0, 0
 }
-
-// Touch is deprecated as of 1.7.0. Use TouchPosition instead.
-type Touch interface {
-	// ID returns an identifier for one stroke.
-	ID() int
-
-	// Position returns the position of the touch.
-	Position() (x, y int)
-}
-
-// Touches is deprecated as of 1.7.0. Use TouchIDs instead.
-func Touches() []Touch {
-	touches := ui.AdjustedTouches()
-	var copies []Touch
-	for _, touch := range touches {
-		copies = append(copies, touch)
-	}
-	return copies
-}
