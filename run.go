@@ -81,12 +81,6 @@ func IsDrawingSkipped() bool {
 	return atomic.LoadInt32(&isDrawingSkipped) != 0
 }
 
-// IsRunningSlowly is deprecated as of 1.8.0-alpha.
-// Use IsDrawingSkipped instead.
-func IsRunningSlowly() bool {
-	return IsDrawingSkipped()
-}
-
 var theGraphicsContext atomic.Value
 
 func run(width, height int, scale float64, title string, g *graphicsContext, mainloop bool) error {
